@@ -112,5 +112,11 @@ function useSnackbar(timeout = 3000) {
 
 const DEBUGLaunchParams = () => {
   const lp = useLaunchParams();
-  return <pre>{JSON.stringify(lp, null, 2)}</pre>;
+  return (
+    <>
+      <h2>v1</h2>
+      <pre>v1</pre>
+      <pre>{JSON.stringify(lp, null, 2)}</pre>
+    </>
+  );
 };
