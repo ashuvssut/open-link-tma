@@ -70,7 +70,10 @@ if (import.meta.env.DEV) {
             // ['user', JSON.stringify({ id: 1, first_name: 'Vladislav' })],
 
             // Example https://t.me/OpenLinkTMA_bot/OpenLinkTMA?startapp=open=https%3A%2F%2Ftest.glambu.com%2Ftelegram%2Flogin%3Ftoken%3D...
-            ['start_param', 't=1&open=https://test.glambu.com/telegram/login?token=mock-token'],
+            [
+              'start_param',
+              'https%3A%2F%2Ftest.glambu.com%2Ftelegram%2Flogin%3Ftoken%3Dmock-token',
+            ],
           ]).toString(),
         ],
         ['tgWebAppVersion', '8.4'],
@@ -83,3 +86,4 @@ if (import.meta.env.DEV) {
     );
   }
 }
+

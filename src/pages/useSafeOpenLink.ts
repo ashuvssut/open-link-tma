@@ -17,8 +17,9 @@ export function useSafeOpenLink() {
 
   const { link, error } = useMemo(() => {
     try {
-      const params = new URLSearchParams(startParam);
-      const openLink = params.get('open');
+      // const params = new URLSearchParams(startParam);
+      // const openLink = params.get('open');
+      const openLink = startParam;
       const decodedLink = decodeURIComponent(openLink ?? '');
 
       if (!decodedLink) return { link: null, error: "Missing 'open' parameter" };
