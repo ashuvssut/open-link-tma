@@ -13,17 +13,17 @@ const allowedDomains = import.meta.env.VITE_ALLOWED_DOMAINS
  */
 export function useSafeOpenLink() {
   const lp = useLaunchParams() as LaunchParams;
-  const linkText = lp.tgWebAppStartParam?.startsWith('open=')
-    ? decodeURIComponent(lp.tgWebAppStartParam.replace('open=', ''))
-    : null;
-
-  console.log(lp, linkText);
+  const startParam = lp.tgWebAppData?.start_param;
 
   const { link, error } = useMemo(() => {
-    if (!linkText) return { link: null, error: "Missing 'open' parameter" };
-
     try {
-      const url = new URL(linkText);
+      const params = new URLSearchParams(startParam);
+      const openLink = params.get('open');
+      const decodedLink = decodeURIComponent(openLink ?? '');
+
+      if (!decodedLink) return { link: null, error: "Missing 'open' parameter" };
+
+      const url = new URL(decodedLink);
 
       if (url.protocol !== 'https:') return { link: null, error: 'Only HTTPS links are allowed' };
 
@@ -38,7 +38,7 @@ export function useSafeOpenLink() {
     } catch {
       return { link: null, error: 'Invalid URL' };
     }
-  }, [linkText, allowedDomains]);
+  }, [startParam, allowedDomains]);
 
   return { link, error };
 }

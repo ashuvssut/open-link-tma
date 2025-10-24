@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@mantine/hooks':
+        specifier: ^8.3.5
+        version: 8.3.5(react@18.3.1)
       '@telegram-apps/telegram-ui':
         specifier: ^2.1.9
         version: 2.1.13(@types/react-dom@18.3.7(@types/react@18.3.26))(@types/react@18.3.26)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -330,6 +333,11 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@mantine/hooks@8.3.5':
+    resolution: {integrity: sha512-0Wf08eWLKi3WkKlxnV1W5vfuN6wcvAV2VbhQlOy0R9nrWorGTtonQF6qqBE3PnJFYF1/ZE+HkYZQ/Dr7DmYSMQ==}
+    peerDependencies:
+      react: ^18.x || ^19.x
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -2288,6 +2296,10 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@mantine/hooks@8.3.5(react@18.3.1)':
+    dependencies:
+      react: 18.3.1
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:

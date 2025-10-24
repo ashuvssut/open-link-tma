@@ -67,7 +67,10 @@ if (import.meta.env.DEV) {
             ['auth_date', ((new Date().getTime() / 1000) | 0).toString()],
             ['hash', 'some-hash'],
             ['signature', 'some-signature'],
-            ['user', JSON.stringify({ id: 1, first_name: 'Vladislav' })],
+            // ['user', JSON.stringify({ id: 1, first_name: 'Vladislav' })],
+
+            // Example https://t.me/OpenLinkTMA_bot/OpenLinkTMA?startapp=open=https%3A%2F%2Ftest.glambu.com%2Ftelegram%2Flogin%3Ftoken%3D...
+            ['start_param', 't=1&open=https://test.glambu.com/telegram/login?token=mock-token'],
           ]).toString(),
         ],
         ['tgWebAppVersion', '8.4'],
