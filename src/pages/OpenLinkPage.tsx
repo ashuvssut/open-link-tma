@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Section,
   Cell,
@@ -7,13 +7,11 @@ import {
   Spinner,
   Snackbar,
   Text,
-  Caption,
-  Tooltip,
 } from '@telegram-apps/telegram-ui';
 import { Page } from '@/components/Page';
 import { useSafeOpenLink } from '@/pages/useSafeOpenLink';
-import { miniApp, openLink } from '@tma.js/sdk-react';
-import { useClipboard } from '@mantine/hooks';
+import { miniApp, openLink, useLaunchParams } from '@tma.js/sdk-react';
+import { CopyLinkButton } from '@/pages/CopyLinkButton';
 
 export const OpenLinkPage = () => {
   const { link, error } = useSafeOpenLink();
@@ -94,6 +92,8 @@ export const OpenLinkPage = () => {
           {error ?? 'Failed to open the link. Please try again.'}
         </Snackbar>
       )}
+
+      <DEBUGLaunchParams />
     </Page>
   );
 };
@@ -110,57 +110,7 @@ function useSnackbar(timeout = 3000) {
   return { showSnackbar, triggerSnackbar, setShowSnackbar };
 }
 
-const CopyLinkButton = ({ link }: { link: string }) => {
-  const buttonRef = useRef(null);
-  const clipboard = useClipboard({ timeout: 1000 });
-
-  if (!link) return null;
-  return (
-    <Section>
-      <div style={{ paddingTop: 12 }}>
-        <div
-          style={{
-            position: 'relative',
-            background: 'var(--tg-theme-secondary-bg-color)',
-            borderRadius: 12,
-            paddingLeft: 12,
-            overflow: 'hidden',
-            maxWidth: 300,
-            margin: '0 auto',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Caption
-            level="2"
-            style={{
-              textAlign: 'center',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              width: '100%',
-            }}
-          >
-            {link}
-          </Caption>
-
-          <Button
-            ref={buttonRef}
-            mode="bezeled"
-            size="s"
-            style={{ minWidth: 80, transform: 'scale(0.8)' }}
-            onClick={() => clipboard.copy(link)}
-          >
-            COPY
-          </Button>
-
-          {clipboard.copied && (
-            <Tooltip targetRef={buttonRef} mode="light">
-              Copied!
-            </Tooltip>
-          )}
-        </div>
-      </div>
-    </Section>
-  );
+const DEBUGLaunchParams = () => {
+  const lp = useLaunchParams();
+  return <pre>{JSON.stringify(lp, null, 2)}</pre>;
 };

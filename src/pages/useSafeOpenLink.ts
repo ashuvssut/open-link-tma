@@ -1,4 +1,4 @@
-import { type LaunchParams, useLaunchParams } from '@tma.js/sdk-react';
+import { useLaunchParams } from '@tma.js/sdk-react';
 import { useMemo } from 'react';
 
 const allowedDomains = import.meta.env.VITE_ALLOWED_DOMAINS
@@ -12,7 +12,7 @@ const allowedDomains = import.meta.env.VITE_ALLOWED_DOMAINS
  * Also, the link must be HTTPS and allowed domain.
  */
 export function useSafeOpenLink() {
-  const lp = useLaunchParams() as LaunchParams;
+  const lp = useLaunchParams();
   const startParam = lp.tgWebAppData?.start_param;
 
   const { link, error } = useMemo(() => {
