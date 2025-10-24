@@ -33,7 +33,7 @@ export const OpenLinkPage = () => {
 
   return (
     <Page>
-      {!link && (
+      {!link ? (
         <Placeholder
           header="Something went wrong"
           description="We couldn’t find the link to open."
@@ -43,45 +43,46 @@ export const OpenLinkPage = () => {
             </Button>
           }
         />
-      )}
+      ) : (
+        <>
+          {status === 'opening' && (
+            <Section>
+              <Cell>
+                <Spinner size="m" />
+                <Text style={{ marginTop: 12 }}>Opening link...</Text>
+              </Cell>
+            </Section>
+          )}
 
-      {link && status === 'opening' && (
-        <Section>
-          <Cell>
-            <Spinner size="m" />
-            <Text style={{ marginTop: 12 }}>Opening link...</Text>
-          </Cell>
-        </Section>
-      )}
+          {status === 'error' && (
+            <Section>
+              <Placeholder
+                header="Couldn’t open the link"
+                description="Tap the button below to open it manually."
+                action={
+                  <Button mode="filled" onClick={() => window.open(link, '_blank')}>
+                    Open in Browser
+                  </Button>
+                }
+              />
+            </Section>
+          )}
 
-      {link && status === 'error' && (
-        <Section>
-          <Placeholder
-            header="Couldn’t open the link"
-            description="Tap the button below to open it manually."
-            action={
-              <Button mode="filled" onClick={() => window.open(link, '_blank')}>
-                Open in Browser
-              </Button>
-            }
-          />
-        </Section>
+          {status === 'success' && (
+            <Section>
+              <Placeholder
+                header="Opening..."
+                description="If the page didn’t open automatically, tap below."
+                action={
+                  <Button mode="filled" onClick={() => window.open(link, '_blank')}>
+                    Open Again
+                  </Button>
+                }
+              />
+            </Section>
+          )}
+        </>
       )}
-
-      {link && status === 'success' && (
-        <Section>
-          <Placeholder
-            header="Opening..."
-            description="If the page didn’t open automatically, tap below."
-            action={
-              <Button mode="filled" onClick={() => window.open(link, '_blank')}>
-                Open Again
-              </Button>
-            }
-          />
-        </Section>
-      )}
-
       {showSnackbar && (
         <Snackbar onClose={() => {}}>
           {error ?? 'Failed to open the link. Please try again.'}
