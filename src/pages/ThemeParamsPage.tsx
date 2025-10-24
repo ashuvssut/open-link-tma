@@ -12,16 +12,12 @@ export const ThemeParamsPage: FC = () => {
     <Page>
       <List>
         <DisplayData
-          rows={
-            Object
-              .entries(tp)
-              .map(([title, value]) => ({
-                title: title
-                  .replace(/[A-Z]/g, (m) => `_${m.toLowerCase()}`)
-                  .replace(/background/, 'bg'),
-                value,
-              }))
-          }
+          rows={Object.entries(tp).map(([title, value]) => ({
+            title: title
+              .replace(/[A-Z]/g, (m) => `_${m.toLowerCase()}`)
+              .replace(/background/, 'bg'),
+            value,
+          }))}
         />
       </List>
     </Page>

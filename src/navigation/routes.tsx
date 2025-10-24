@@ -17,7 +17,11 @@ export const routes: Route[] = [
   { path: '/', Component: IndexPage },
   { path: '/init-data', Component: InitDataPage, title: 'Init Data' },
   { path: '/theme-params', Component: ThemeParamsPage, title: 'Theme Params' },
-  { path: '/launch-params', Component: LaunchParamsPage, title: 'Launch Params' },
+  {
+    path: '/launch-params',
+    Component: LaunchParamsPage,
+    title: 'Launch Params',
+  },
   {
     path: '/ton-connect',
     Component: TONConnectPage,
