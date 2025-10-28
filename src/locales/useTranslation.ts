@@ -1,25 +1,26 @@
 import { defaultLocale, Locale, TranslationKey, translations } from '@/locales';
 import { useSafeOpenLink } from '@/pages/OpenLinkPage/useSafeOpenLink';
+import { useEffect } from 'react';
 
 export const t = <TTransKey extends TranslationKey, TLocale extends Locale>(
   key: TTransKey,
   lang?: TLocale
 ): (typeof translations)[TLocale][TTransKey] => {
   let selectedLang: Locale | undefined = lang;
-  if (!selectedLang && typeof window !== 'undefined') {
-    selectedLang = window.locale;
+  if (!selectedLang) {
+    selectedLang = localStorage.getItem('locale') as Locale;
   }
   if (!selectedLang) {
     selectedLang = defaultLocale;
   }
 
-  return translations[selectedLang]?.[key] || translations[defaultLocale]?.[key] || key;
+  return translations[selectedLang]?.[key] || translations[defaultLocale]?.[key] || key || '';
 };
 
 const useLocaleTranslations = <TLocale extends Locale>(lang: TLocale) => {
-  if (typeof window !== 'undefined') {
-    window.locale = lang;
-  }
+  useEffect(() => {
+    localStorage.setItem('locale', lang);
+  }, [lang]);
 
   return {
     t: <TTransKey extends TranslationKey>(
@@ -33,11 +34,12 @@ export const useTranslation = () => {
   return useLocaleTranslations(lang);
 };
 
-export const Trans = ({ key: t, vars }: { key: TranslationKey; vars?: Record<string, string> }) => {
-  const trans = useTranslation().t(t);
-
+export const Trans = ({ k, vars }: { k: TranslationKey; vars?: Record<string, string> }) => {
+  const { t } = useTranslation();
+  let trans = t(k);
   for (const [key, value] of Object.entries(vars ?? {})) {
-    trans.replace(`{{${key}}}`, value);
+    if (!trans) console.error('Translation not found', key, vars);
+    trans = trans.replace(`{{${key}}}`, value);
   }
 
   return trans;

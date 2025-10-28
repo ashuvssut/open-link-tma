@@ -15,7 +15,6 @@ export function App() {
       appearance={isDark ? 'dark' : 'light'}
       platform={['macos', 'ios'].includes(lp.tgWebAppPlatform) ? 'ios' : 'base'}
     >
-      <Toaster />
       <HashRouter>
         <Routes>
           {routes.map((route) => (
@@ -24,6 +23,7 @@ export function App() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
         <DEBUG />
+        <Toaster />
       </HashRouter>
     </AppRoot>
   );

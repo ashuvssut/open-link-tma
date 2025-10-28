@@ -161,10 +161,10 @@ export const createOpenLink = (link: string | null) => (browser: BrowserType) =>
     toast.success(
       <div style={{ display: 'grid' }}>
         <Subheadline>
-          <Trans key="openingInBrowserName" vars={{ browserName: formatBrowserName(browser) }} />
+          <Trans k="openingInBrowserName" vars={{ browserName: formatBrowserName(browser) }} />
         </Subheadline>
         <Caption>
-          <Trans key="tryAgainWithDifferentBrowser" />
+          <Trans k="tryAgainWithDifferentBrowser" />
         </Caption>
       </div>
     );
