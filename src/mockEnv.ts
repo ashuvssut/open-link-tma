@@ -1,7 +1,8 @@
-import { encodeX } from '@/utils';
+import { encodeX } from '@/helpers/utils';
+import { defaultLocale } from '@/locales';
 import { emitEvent, isTMA, mockTelegramEnv } from '@tma.js/sdk-react';
 
-const lang = 'en';
+const lang = defaultLocale;
 const token = 'mock-token';
 const startParam = encodeX(
   `open=https://example.com/telegram/login?token=${token}&lang=${lang}`

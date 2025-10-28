@@ -1,5 +1,7 @@
 import { ENV } from '@/constants';
 import { decodeX, showErrorToast } from '@/helpers/utils';
+import { defaultLocale, isLocaleSupported, Locale } from '@/locales';
+import { t } from '@/locales/useTranslation';
 import { useLaunchParams } from '@tma.js/sdk-react';
 import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -16,26 +18,27 @@ export function useSafeOpenLink() {
 
   const { search } = useLocation();
 
-  const { decodedLink, type } = extractLink(startParam, search);
+  const { decodedLink, type, lang } = extractLink(startParam, search);
   const { link, error } = useMemo(() => {
     try {
-      if (!decodedLink) return { link: null, error: "Missing 'open' parameter", decodeType: null };
+      if (!decodedLink)
+        return { link: null, error: t('error.missingOpenParam', lang), decodeType: null };
 
       const url = new URL(decodedLink);
 
-      if (url.protocol !== 'https:') return { link: null, error: 'Only HTTPS links are allowed' };
+      if (url.protocol !== 'https:') return { link: null, error: t('error.httpsOnly', lang) };
 
       if (
         ENV.allowedDomains.length > 0 &&
         !ENV.allowedDomains.some((d: string) => url.hostname.endsWith(d))
       ) {
-        return { link: null, error: 'Domain not allowed' };
+        return { link: null, error: t('error.domainNotAllowed', lang) };
       }
 
       return { link: url.toString(), error: null };
     } catch (err) {
-      showErrorToast(err, 'Link parsing failed!');
-      return { link: null, error: 'Invalid URL' };
+      showErrorToast(err, t('linkParsingFailed', lang));
+      return { link: null, error: t('error.invalidUrl', lang) };
     }
   }, [decodedLink]);
 
@@ -52,33 +55,61 @@ export function useSafeOpenLink() {
     error,
   };
 
-  return { link, error, __: { debug } };
+  return { link, error, lang, __: { debug } };
 }
 
-const extractLinkFromStartParam = (startParam: string) => {
-  if (!startParam) return '';
+const extractSearchParamsFromStartParam = (startParam: string) => {
+  if (!startParam) return;
   const decodedStartParam = decodeX(startParam);
   const params = new URLSearchParams(decodedStartParam);
-  const openLink = params.get('open');
-  const decodedLink = decodeURIComponent(openLink ?? '');
-  return decodedLink;
+  return params;
 };
 
-/** For Inline button web_app urls: https://ashuvssut.github.io/open-link-tma/#?open=https%3A%2F%2Fexample.com%3Ftoken%3Dmock-token-123%26lang%3Den` */
-const extractLinkFromWebAppSearchParam = (search: string) => {
-  if (!search) return '';
+/** For Inline button web_app urls: https://ashuvssut.github.io/open-link-tma/#?open=https%3A%2F%2Fexample.com%3Ftoken%3Dmock-token-123&lang=en` */
+const extractSearchParamsFromWebAppSearchParam = (search: string) => {
+  if (!search) return null;
   const params = new URLSearchParams(search);
-  const openParam = params.get('open');
-  console.log('params openParam', openParam);
-  return openParam || '';
+  return params;
+  // const openParam = params.get('open');
+  // console.log('params openParam', openParam);
+  // return openParam || '';
 };
 
-const extractLink = (startParam: string | undefined, search: string) => {
-  let decodedLink = extractLinkFromWebAppSearchParam(search);
-  if (decodedLink) return { decodedLink, type: 'web_app_search_param' as const };
+const extractLink = (
+  startParam: string | undefined,
+  search: string
+): {
+  decodedLink: string | null;
+  type: 'start_param' | 'web_app_search_param' | null;
+  lang: Locale;
+} => {
+  const searchParamsWebapp = extractSearchParamsFromWebAppSearchParam(search);
+  const openParam = searchParamsWebapp?.get('open');
 
-  decodedLink = extractLinkFromStartParam(startParam ?? '');
-  if (decodedLink) return { decodedLink, type: 'start_param' as const };
+  if (openParam)
+    return {
+      decodedLink: openParam,
+      lang: getLang(searchParamsWebapp),
+      type: 'web_app_search_param' as const,
+    };
 
-  return { decodedLink: null, type: null };
+  const searchParamsStartParam = extractSearchParamsFromStartParam(startParam ?? '');
+  const decodedLink = searchParamsStartParam?.get('open');
+
+  if (decodedLink)
+    return {
+      decodedLink,
+      lang: getLang(searchParamsStartParam),
+      type: 'start_param' as const,
+    };
+
+  return { decodedLink: null, type: null, lang: defaultLocale };
+};
+
+const getLang = (searchParams: URLSearchParams | undefined | null): Locale => {
+  if (!searchParams) return defaultLocale;
+
+  const lang = searchParams.get('lang');
+  if (isLocaleSupported(lang)) return lang;
+  return defaultLocale;
 };

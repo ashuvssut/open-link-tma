@@ -25,6 +25,8 @@ import { RiPlanetFill } from 'react-icons/ri';
 import { openLink, OpenLinkBrowser } from '@tma.js/sdk-react';
 import { showErrorToast } from '@/helpers/utils';
 import toast from 'react-hot-toast';
+import { t, Trans, useTranslation } from '@/locales/useTranslation';
+import { TranslationKey } from '@/locales';
 
 export const OpenLinkPage = () => {
   const { link, error } = useSafeOpenLink();
@@ -34,15 +36,16 @@ export const OpenLinkPage = () => {
 
   const handleOpen = createOpenLink(link);
 
+  const { t } = useTranslation();
   if (!link) {
     return (
       <Page>
         <Placeholder
-          header="Something went wrong"
-          description="We couldn’t find the link you were trying to open."
+          header={t('sthWentWrong')}
+          description={t('couldNotFindLink')}
           action={
             <Button mode="filled" onClick={() => miniApp.close()}>
-              Close
+              {t('close')}
             </Button>
           }
         />
@@ -62,14 +65,13 @@ export const OpenLinkPage = () => {
               <CopyLinkButton link={link} />
             </AutoOpenLink> */}
             <div style={{ padding: '2rem 1rem' }}>
-              <Headline weight="2">Open your link</Headline>
+              <Headline weight="2">{t('openLink')}</Headline>
               <Subheadline style={{ color: 'var(--tgui--hint_color)', maxWidth: 340 }}>
-                Copy the link and open it directly in your preferred browser&nbsp;
-                <em>(Recommended)</em>.
+                {t('copyAndOpen')} <em>({t('recommended')})</em>.
               </Subheadline>
               <CopyLinkButton link={link} style={{ marginTop: 16 }} />
 
-              <DividerWithText>or open with</DividerWithText>
+              <DividerWithText>{t('orOpenWith')}</DividerWithText>
 
               <List>
                 {fallbackBrowsers.map((b) => {
@@ -87,7 +89,7 @@ export const OpenLinkPage = () => {
                       role="button"
                       style={{ borderRadius: 20 }}
                     >
-                      <Text style={{ fontSize: 15 }}>{b.label}</Text>
+                      <Text style={{ fontSize: 15 }}>{t(b.label)}</Text>
                     </Cell>
                   );
                 })}
@@ -138,13 +140,18 @@ const DividerWithText = ({ children }: { children: React.ReactNode }) => (
 type TgPlaform = 'ios' | 'android' | 'maocs' | 'tdesktop' | 'weba' | 'web';
 type BrowserType = OpenLinkBrowser | 'safari';
 export const fallbackBrowsers = [
-  { id: 'safari', label: 'Open in Safari', icon: <FaSafari size={20} />, type: 'ios' },
-  { id: 'chrome', label: 'Open in Chrome', icon: <FaChrome size={20} /> },
-  { id: 'firefox', label: 'Open in Firefox', icon: <FaFirefoxBrowser size={20} /> },
-  { id: 'edge', label: 'Open in Microsoft Edge', icon: <FaEdge size={20} /> },
-  { id: 'brave', label: 'Open in Brave', icon: <FaBrave size={20} /> },
-  { id: 'samsung-browser', label: 'Open in Samsung Internet', icon: <RiPlanetFill size={20} /> },
-] as { id: OpenLinkBrowser | 'safari'; label: string; icon: JSX.Element; type?: TgPlaform }[];
+  { id: 'safari', label: 'openInSafari', icon: <FaSafari size={20} />, type: 'ios' },
+  { id: 'chrome', label: 'openInChrome', icon: <FaChrome size={20} /> },
+  { id: 'firefox', label: 'openInFirefox', icon: <FaFirefoxBrowser size={20} /> },
+  { id: 'edge', label: 'openInEdge', icon: <FaEdge size={20} /> },
+  { id: 'brave', label: 'openInBrave', icon: <FaBrave size={20} /> },
+  { id: 'samsung-browser', label: 'openInSamsungBrowser', icon: <RiPlanetFill size={20} /> },
+] as {
+  id: OpenLinkBrowser | 'safari';
+  label: TranslationKey;
+  icon: JSX.Element;
+  type?: TgPlaform;
+}[];
 
 export const createOpenLink = (link: string | null) => (browser: BrowserType) => {
   if (!link) return;
@@ -153,13 +160,17 @@ export const createOpenLink = (link: string | null) => (browser: BrowserType) =>
     else openLink(link, { tryBrowser: browser, tryInstantView: false });
     toast.success(
       <div style={{ display: 'grid' }}>
-        <Subheadline>Opening in {formatBrowserName(browser)}!</Subheadline>
-        <Caption>If it doesn’t open, try again with a different browser.</Caption>
+        <Subheadline>
+          <Trans key="openingInBrowserName" vars={{ browserName: formatBrowserName(browser) }} />
+        </Subheadline>
+        <Caption>
+          <Trans key="tryAgainWithDifferentBrowser" />
+        </Caption>
       </div>
     );
   } catch (err) {
-    console.error('Failed to open link', err);
-    showErrorToast(err, 'Could not open the link.');
+    console.error('failedToOpenLink', err);
+    showErrorToast(err, t('failedToOpenLink'));
   }
 };
 
