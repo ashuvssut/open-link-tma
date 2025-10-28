@@ -23,7 +23,7 @@ import { CopyLinkButton } from '@/pages/OpenLinkPage/CopyLinkButton';
 import { FaEdge, FaFirefoxBrowser, FaBrave, FaChrome, FaSafari } from 'react-icons/fa6';
 import { RiPlanetFill } from 'react-icons/ri';
 import { openLink, OpenLinkBrowser } from '@tma.js/sdk-react';
-import { showErrorToast } from '@/utils';
+import { showErrorToast } from '@/helpers/utils';
 import toast from 'react-hot-toast';
 
 export const OpenLinkPage = () => {
