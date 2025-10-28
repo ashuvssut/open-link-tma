@@ -1,5 +1,5 @@
 import { ENV } from '@/constants';
-import { decodeX, showErrorToast } from '@/utils';
+import { decodeX, showErrorToast } from '@/helpers/utils';
 import { useLaunchParams } from '@tma.js/sdk-react';
 import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -16,9 +16,9 @@ export function useSafeOpenLink() {
 
   const { search } = useLocation();
 
+  const { decodedLink, type } = extractLink(startParam, search);
   const { link, error } = useMemo(() => {
     try {
-      const { decodedLink } = extractLink(startParam, search);
       if (!decodedLink) return { link: null, error: "Missing 'open' parameter", decodeType: null };
 
       const url = new URL(decodedLink);
@@ -37,13 +37,27 @@ export function useSafeOpenLink() {
       showErrorToast(err, 'Link parsing failed!');
       return { link: null, error: 'Invalid URL' };
     }
-  }, [startParam, ENV.allowedDomains, search]);
+  }, [decodedLink]);
 
-  return { link, error };
+  const debug = {
+    url: window.location.toString(),
+    linkType: type,
+    search: {
+      full: search,
+      openParam: new URLSearchParams(search).get('open'),
+      langParam: new URLSearchParams(search).get('lang'),
+    },
+    startParam,
+    link,
+    error,
+  };
+
+  return { link, error, __: { debug } };
 }
 
 const extractLinkFromStartParam = (startParam: string) => {
-  const decodedStartParam = decodeX(startParam ?? '');
+  if (!startParam) return '';
+  const decodedStartParam = decodeX(startParam);
   const params = new URLSearchParams(decodedStartParam);
   const openLink = params.get('open');
   const decodedLink = decodeURIComponent(openLink ?? '');
@@ -52,6 +66,7 @@ const extractLinkFromStartParam = (startParam: string) => {
 
 /** For Inline button web_app urls: https://ashuvssut.github.io/open-link-tma/#?open=https%3A%2F%2Fexample.com%3Ftoken%3Dmock-token-123%26lang%3Den` */
 const extractLinkFromWebAppSearchParam = (search: string) => {
+  if (!search) return '';
   const params = new URLSearchParams(search);
   const openParam = params.get('open');
   console.log('params openParam', openParam);

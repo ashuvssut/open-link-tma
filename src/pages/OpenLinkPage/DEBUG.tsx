@@ -3,8 +3,9 @@ import { LuExternalLink } from 'react-icons/lu';
 import { openLink, OpenLinkBrowser, useLaunchParams } from '@tma.js/sdk-react';
 import { ENV } from '@/constants';
 import { useSafeOpenLink } from '@/pages/OpenLinkPage/useSafeOpenLink';
+import { type PropsWithChildren } from 'react';
 
-export const DEBUGLaunchParams = () => {
+export const DEBUGLaunchParams = ({ children }: PropsWithChildren) => {
   const lp = useLaunchParams();
   return (
     <div style={{ position: 'relative', width: '100%', height: 500 }}>
@@ -19,6 +20,7 @@ export const DEBUGLaunchParams = () => {
         }}
       >
         <pre>{`versionCode: ${ENV.debugVersionCode}  `.repeat(5)}</pre>
+        {children}
         <pre>Launch Params</pre>
         <pre>{JSON.stringify(lp, null, 2)}</pre>
       </div>
@@ -172,11 +174,14 @@ export const DEBUGSafariTestSet = ({ link }: { link: string }) => {
 };
 
 export const DEBUG = () => {
-  const { link } = useSafeOpenLink();
+  const { link, __ } = useSafeOpenLink();
 
   return (
     <>
-      <DEBUGLaunchParams />
+      <DEBUGLaunchParams>
+        <pre>Logs</pre>
+        <pre>{JSON.stringify(__.debug, null, 2)}</pre>
+      </DEBUGLaunchParams>
 
       {link && (
         <List style={{ padding: '1rem', display: 'grid' }}>
