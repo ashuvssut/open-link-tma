@@ -4,9 +4,9 @@ const allowedDomains = import.meta.env.VITE_ALLOWED_DOMAINS
 
 export const ENV = {
   /** Github pages take time to update. So this is a workaround to know if the page is outdated */
-  debugVersionCode: 1,
+  debugVersionCode: 5,
   /** Disable `enableDebug` in production! */
-  enableDebug: true,
+  enableDebug: false,
   /**
    * Use Base62 encoding for `start_param` parameter.
    *

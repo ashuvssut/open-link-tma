@@ -18,9 +18,9 @@ import {
 import { LuExternalLink } from 'react-icons/lu';
 import { Page } from '@/components/Page';
 import { useSafeOpenLink } from '@/pages/OpenLinkPage/useSafeOpenLink';
-import { miniApp } from '@tma.js/sdk-react';
+import { miniApp, useLaunchParams } from '@tma.js/sdk-react';
 import { CopyLinkButton } from '@/pages/OpenLinkPage/CopyLinkButton';
-import { FaEdge, FaFirefoxBrowser, FaBrave, FaChrome } from 'react-icons/fa6';
+import { FaEdge, FaFirefoxBrowser, FaBrave, FaChrome, FaSafari } from 'react-icons/fa6';
 import { RiPlanetFill } from 'react-icons/ri';
 import { openLink, OpenLinkBrowser } from '@tma.js/sdk-react';
 import { showErrorToast } from '@/utils';
@@ -52,6 +52,7 @@ export const OpenLinkPage = () => {
 
   // const { showSnackbar, triggerSnackbar } = useSnackbar(6000);
 
+  const platform = useLaunchParams().tgWebAppPlatform;
   return (
     <Page>
       <div style={{ display: 'grid', padding: '1rem' }}>
@@ -64,32 +65,32 @@ export const OpenLinkPage = () => {
               <Headline weight="2">Open your link</Headline>
               <Subheadline style={{ color: 'var(--tgui--hint_color)', maxWidth: 340 }}>
                 Copy the link and open it directly in your preferred browser&nbsp;
-                <strong>
-                  <em>(Recommended)</em>
-                </strong>
-                .
+                <em>(Recommended)</em>.
               </Subheadline>
               <CopyLinkButton link={link} style={{ marginTop: 16 }} />
 
               <DividerWithText>or open with</DividerWithText>
 
               <List>
-                {fallbackBrowsers.map((b) => (
-                  <Cell
-                    key={b.id}
-                    before={
-                      <IconContainer style={{ alignItems: 'center', display: 'flex' }}>
-                        {b.icon}
-                      </IconContainer>
-                    }
-                    after={<LuExternalLink size={16} />}
-                    onClick={() => handleOpen(b.id)}
-                    role="button"
-                    style={{ borderRadius: 20 }}
-                  >
-                    <Text style={{ fontSize: 15 }}>{b.label}</Text>
-                  </Cell>
-                ))}
+                {fallbackBrowsers.map((b) => {
+                  if (b.type && platform !== b.type) return null;
+                  return (
+                    <Cell
+                      key={b.id}
+                      before={
+                        <IconContainer style={{ alignItems: 'center', display: 'flex' }}>
+                          {b.icon}
+                        </IconContainer>
+                      }
+                      after={<LuExternalLink size={16} />}
+                      onClick={() => handleOpen(b.id)}
+                      role="button"
+                      style={{ borderRadius: 20 }}
+                    >
+                      <Text style={{ fontSize: 15 }}>{b.label}</Text>
+                    </Cell>
+                  );
+                })}
 
                 {/* <Button
                 mode="filled"
@@ -133,18 +134,23 @@ const DividerWithText = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
+/** @see https://docs.telegram-mini-apps.com/platform/about#supported-applications */
+type TgPlaform = 'ios' | 'android' | 'maocs' | 'tdesktop' | 'weba' | 'web';
+type BrowserType = OpenLinkBrowser | 'safari';
 export const fallbackBrowsers = [
+  { id: 'safari', label: 'Open in Safari', icon: <FaSafari size={20} />, type: 'ios' },
   { id: 'chrome', label: 'Open in Chrome', icon: <FaChrome size={20} /> },
   { id: 'firefox', label: 'Open in Firefox', icon: <FaFirefoxBrowser size={20} /> },
   { id: 'edge', label: 'Open in Microsoft Edge', icon: <FaEdge size={20} /> },
   { id: 'brave', label: 'Open in Brave', icon: <FaBrave size={20} /> },
   { id: 'samsung-browser', label: 'Open in Samsung Internet', icon: <RiPlanetFill size={20} /> },
-] as { id: OpenLinkBrowser; label: string; icon: JSX.Element }[];
+] as { id: OpenLinkBrowser | 'safari'; label: string; icon: JSX.Element; type?: TgPlaform }[];
 
-export const createOpenLink = (link: string | null) => (browser: OpenLinkBrowser) => {
+export const createOpenLink = (link: string | null) => (browser: BrowserType) => {
   if (!link) return;
   try {
-    openLink(link, { tryBrowser: browser, tryInstantView: false });
+    if (browser === 'safari') openLink(link, { tryInstantView: false });
+    else openLink(link, { tryBrowser: browser, tryInstantView: false });
     toast.success(
       <div style={{ display: 'grid' }}>
         <Subheadline>Opening in {formatBrowserName(browser)}!</Subheadline>
