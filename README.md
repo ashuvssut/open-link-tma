@@ -1,4 +1,57 @@
-# Telegram Mini Apps React Template
+# 🧭 open-link-tma
+
+A **Telegram Mini App (TMA)** that allows you to open external links directly from within Telegram.
+
+A TMA is a web application that is registered with a Telegram Bot. It can be launched from the Bot's chat only.
+
+### 🚩 How to Launch the TMA
+
+This app runs inside a **WebView** in the Telegram app and can be launched in **two ways**:
+
+
+#### 🧩 1. Using `web_app` Keyboard Button
+
+Attach a `web_app`-type KeyboardButton to a bot message.
+- Reference: [KeyboardButton Mini Apps](https://core.telegram.org/bots/webapps#keyboard-button-mini-apps)
+- The `web_app` URL should point to the deployed app, e.g.
+
+  ```
+  https://ashuvssut.github.io/open-link-tma/#?open=${encodeURIComponent('https://example.com?token=mock-token&lang=en')}
+  ```
+- **Note:** The `#` prefix is required because the app uses React Router’s `HashRouter`.
+
+---
+
+#### 🚀 2. Using `t.me` Link with `startapp` Parameter
+
+You can also launch the app via a `t.me` link containing a Base62-encoded start parameter.
+
+- Reference: [Start Parameter Docs](https://docs.telegram-mini-apps.com/platform/start-parameter)
+- Example:
+
+  ```
+  https://t.me/OpenLinkTMA_bot/OpenLinkTMA?startapp=${encodeBase62('https://example.com?token=mock-token&lang=en')}
+  ```
+- The encoded value will be decoded and opened automatically within the app.
+
+---
+
+### 🧠 Development Notes
+
+- The mock Base62-encoded link is logged in [`src/mockEnv.ts`](./src/mockEnv.ts).
+- Base62 encoding/decoding utilities are implemented in [`src/utils.ts`](./src/utils.ts).
+- I have also left some helpful notes about variables in the code comments in [`src/constants.ts`](./src/constants.ts).
+- The TMA cannot open links without user interaction due to webview security restrictions.
+  - See comments in [`src/pages/OpenLinkPage/AutoOpenLink.tsx`](./src/pages/OpenLinkPage/AutoOpenLink.tsx) for details.
+- This TMA uses Telegram UI components. Checkout the [Storybook](https://tgui.xelene.me/?path=/docs/getting-started--documentation)
+
+
+### 🚫 Limitations
+- This TMA only works in android as of now. iOS support is coming soon.
+
+-------------
+
+# This project was created from Telegram Mini Apps React Template
 
 This template demonstrates how developers can implement a single-page
 application on the Telegram Mini Apps platform using the following technologies

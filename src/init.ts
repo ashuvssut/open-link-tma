@@ -22,7 +22,7 @@ export async function init(options: {
 }): Promise<void> {
   // Set @telegram-apps/sdk-react debug mode and initialize it.
   setDebug(options.debug);
-  initSDK();
+  initSDK({ isInlineMode: true });
 
   // Add Eruda if needed.
   options.eruda &&
@@ -66,6 +66,8 @@ export async function init(options: {
   // Mount all components used in the project.
   backButton.mount.ifAvailable();
   initData.restore();
+
+  backButton.onClick(() => miniApp.close());
 
   if (miniApp.mount.isAvailable()) {
     themeParams.mount();

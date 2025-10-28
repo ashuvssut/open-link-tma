@@ -1,4 +1,15 @@
+import { encodeX } from '@/utils';
 import { emitEvent, isTMA, mockTelegramEnv } from '@tma.js/sdk-react';
+
+const lang = 'en';
+const token = 'mock-token';
+const startParam = encodeX(
+  `open=https://example.com/telegram/login?token=${token}&lang=${lang}`
+);
+console.log(
+  'TMA mock URL from startParam',
+  `https://t.me/OpenLinkTMA_bot/OpenLinkTMA?startapp=${startParam}`
+);
 
 // It is important, to mock the environment only for development purposes. When building the
 // application, import.meta.env.DEV will become false, and the code inside will be tree-shaken,
@@ -69,13 +80,10 @@ if (import.meta.env.DEV) {
             ['signature', 'some-signature'],
             // ['user', JSON.stringify({ id: 1, first_name: 'Vladislav' })],
 
-            // Example https://t.me/OpenLinkTMA_bot/OpenLinkTMA?startapp=open=https%3A%2F%2Ftest.glambu.com%2Ftelegram%2Flogin%3Ftoken%3D...
-            [
-              'start_param',
-              'https%3A%2F%2Ftest.glambu.com%2Ftelegram%2Flogin%3Ftoken%3Dmock-token',
-            ],
+            ['start_param', startParam],
           ]).toString(),
         ],
+        ['tgWebAppStartParam', startParam],
         ['tgWebAppVersion', '8.4'],
         ['tgWebAppPlatform', 'tdesktop'],
       ]),
@@ -86,4 +94,3 @@ if (import.meta.env.DEV) {
     );
   }
 }
-

@@ -13,13 +13,17 @@ import './index.css';
 
 // Mock the environment in case, we are outside Telegram.
 import './mockEnv.ts';
+import { ENV } from '@/constants.ts';
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 
 try {
   const launchParams = retrieveLaunchParams();
   const { tgWebAppPlatform: platform } = launchParams;
-  const debug = (launchParams.tgWebAppStartParam || '').includes('debug') || import.meta.env.DEV;
+  const debug =
+    (launchParams.tgWebAppStartParam || '').includes('debug') ||
+    import.meta.env.DEV ||
+    ENV.enableDebug;
 
   // Configure all application dependencies.
   await init({
