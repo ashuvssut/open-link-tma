@@ -12,6 +12,7 @@ This app runs inside a **WebView** in the Telegram app and can be launched in **
 #### 🧩 1. Using `web_app` Keyboard Button
 
 Attach a `web_app`-type KeyboardButton to a bot message.
+- This is the _**recommended**_ way to launch TMAs. It will enable you to use [`sendData`](https://docs.telegram-mini-apps.com/packages/tma-js-sdk/features/uncategorized#senddata) to send data strings back to the bot to which your bot can listen and respond with service messages.
 - Reference: [KeyboardButton Mini Apps](https://core.telegram.org/bots/webapps#keyboard-button-mini-apps)
 - The `web_app` URL should point to the deployed app, e.g.
 
