@@ -46,10 +46,6 @@ You can also launch the app via a `t.me` link containing a Base62-encoded start 
   - See comments in [`src/pages/OpenLinkPage/AutoOpenLink.tsx`](./src/pages/OpenLinkPage/AutoOpenLink.tsx) for details.
 - This TMA uses Telegram UI components. Checkout the [Storybook](https://tgui.xelene.me/?path=/docs/getting-started--documentation)
 
-
-### 🚫 Limitations
-- This TMA only works in android as of now. iOS support is coming soon.
-
 -------------
 
 # This project was created from Telegram Mini Apps React Template
