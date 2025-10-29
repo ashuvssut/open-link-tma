@@ -1,0 +1,19 @@
+.uncontrolled-accordion-summary-wrapper {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.uncontrolled-accordion-summary {
+  width: 100%;
+}
+
+.uncontrolled-accordion-summary > div > h6 {
+  align-self: flex-end;
+}
+
+.uncontrolled-accordion-summary > div:has(svg) {
+  transform: translateY(1px);
+}

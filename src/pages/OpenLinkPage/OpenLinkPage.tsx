@@ -1,6 +1,6 @@
 import './styles.css';
 
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { type PropsWithChildren, useEffect } from 'react';
 import {
   Section,
   Placeholder,
@@ -12,24 +12,22 @@ import {
   Card,
   Headline,
   Subheadline,
-  Divider,
   Caption,
-  Accordion,
 } from '@telegram-apps/telegram-ui';
 import { LuExternalLink } from 'react-icons/lu';
 import { Page } from '@/components/Page';
 import { useSafeOpenLink } from '@/pages/OpenLinkPage/useSafeOpenLink';
 import { miniApp, useLaunchParams } from '@tma.js/sdk-react';
 import { CopyLinkButton } from '@/pages/OpenLinkPage/CopyLinkButton';
-import { FaEdge, FaFirefoxBrowser, FaBrave, FaChrome, FaSafari } from 'react-icons/fa6';
+import { FaEdge, FaBrave, FaChrome, FaSafari } from 'react-icons/fa6';
 import { RiPlanetFill } from 'react-icons/ri';
 import { openLink, OpenLinkBrowser } from '@tma.js/sdk-react';
 import { showErrorToast } from '@/helpers/utils';
 import toast from 'react-hot-toast';
 import { t, Trans, useTranslation } from '@/locales/useTranslation';
 import { TranslationKey } from '@/locales';
-import { AccordionSummary } from '@telegram-apps/telegram-ui/dist/components/Blocks/Accordion/components/AccordionSummary/AccordionSummary';
-import { AccordionContent } from '@telegram-apps/telegram-ui/dist/components/Blocks/Accordion/components/AccordionContent/AccordionContent';
+import { UncontrolledAccordion } from '@/components/UncontrolledAccordion';
+import { DividerWithText } from '@/components/DividerWithText';
 
 export const OpenLinkPage = () => {
   const { link, error } = useSafeOpenLink();
@@ -55,7 +53,6 @@ export const OpenLinkPage = () => {
   }
 
   // const { showSnackbar, triggerSnackbar } = useSnackbar(6000);
-  const [expanded, setExpanded] = useState(false);
   return (
     <Page>
       <div style={{ display: 'grid', padding: '1rem' }}>
@@ -75,20 +72,13 @@ export const OpenLinkPage = () => {
               <DividerWithText>{t('orOpenWith')}</DividerWithText>
 
               <BrowserChoiceList browsers={mainBrowsers} />
-              <div>
-                <Accordion onChange={(expanded) => setExpanded(expanded)} expanded={expanded}>
-                  <AccordionSummary className="browser-choice-accordion-summary">
-                    <Caption weight="3" style={{ textAlign: 'left' }}>
-                      {expanded ? t('hideOtherBrowsers') : t('showOtherBrowsers')}
-                    </Caption>
-                  </AccordionSummary>
-                  <AccordionContent>
-                    <div style={{ padding: '10px 20px' }}>
-                      <BrowserChoiceList browsers={fallbackBrowsers} />
-                    </div>
-                  </AccordionContent>
-                </Accordion>
-              </div>
+              <UncontrolledAccordion
+                renderHeader={(isOpen) =>
+                  isOpen ? t('hideOtherBrowsers') : t('showOtherBrowsers')
+                }
+              >
+                <BrowserChoiceList browsers={fallbackBrowsers} />
+              </UncontrolledAccordion>
             </div>
           </Section>
         </Card>
@@ -137,24 +127,6 @@ const BrowserChoiceList = ({
     </List>
   );
 };
-
-const DividerWithText = ({ children }: { children: React.ReactNode }) => (
-  <div
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: 10,
-      padding: '1rem 0',
-    }}
-  >
-    <Divider style={{ flex: 1 }} />
-    <Text style={{ color: 'var(--tgui--hint_color)' }} weight="2">
-      {children}
-    </Text>
-    <Divider style={{ flex: 1 }} />
-  </div>
-);
 
 /** @see https://docs.telegram-mini-apps.com/platform/about#supported-applications */
 type TgPlaform = 'ios' | 'android' | 'maocs' | 'tdesktop' | 'weba' | 'web';
