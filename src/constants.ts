@@ -2,6 +2,10 @@ const allowedDomains = import.meta.env.VITE_ALLOWED_DOMAINS
   ? import.meta.env.VITE_ALLOWED_DOMAINS.split(',').map((d: string) => d.trim())
   : [];
 
+const showFallbackBrowsers = import.meta.env.VITE_SHOW_FALLBACK_BROWSERS
+  ? import.meta.env.VITE_SHOW_FALLBACK_BROWSERS === 'true'
+  : true;
+
 export const ENV = {
   /** Github pages take time to update. So this is a workaround to know if the page is outdated */
   debugVersionCode: 5,
@@ -60,4 +64,5 @@ export const ENV = {
    */
   useBase62: true,
   allowedDomains,
+  showFallbackBrowsers,
 };

@@ -2,7 +2,6 @@ import { Navigate, Route, Routes, HashRouter } from 'react-router-dom';
 import { useLaunchParams, useSignal, miniApp } from '@tma.js/sdk-react';
 import { AppRoot } from '@telegram-apps/telegram-ui';
 import { Toaster } from 'react-hot-toast';
-import { DEBUG } from '@/pages/OpenLinkPage/DEBUG';
 
 import { routes } from '@/navigation/routes.tsx';
 
@@ -22,7 +21,7 @@ export function App() {
           ))}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-        <DEBUG />
+        {/* <DEBUG /> */}
         <Toaster />
       </HashRouter>
     </AppRoot>

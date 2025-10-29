@@ -53,6 +53,16 @@ jobs:
       - name: Install deps
         run: pnpm install --frozen-lockfile
 
+      - name: Create .env file
+        run: |
+          # Example of writing Repo secrets to .env
+          echo "VITE_ALLOWED_DOMAINS=${{ secrets.VITE_ALLOWED_DOMAINS }}" >> .env
+          # Example of writing Repo varibales to .env
+          echo "VITE_SHOW_FALLBACK_BROWSERS=${{ vars.VITE_SHOW_FALLBACK_BROWSERS }}" >> .env
+
+      - name: Build
+        run: pnpm build
+
       - name: Build
         run: pnpm build
 

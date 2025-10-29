@@ -28,6 +28,7 @@ import { t, Trans, useTranslation } from '@/locales/useTranslation';
 import { TranslationKey } from '@/locales';
 import { UncontrolledAccordion } from '@/components/UncontrolledAccordion';
 import { DividerWithText } from '@/components/DividerWithText';
+import { ENV } from '@/constants';
 
 export const OpenLinkPage = () => {
   const { link, error } = useSafeOpenLink();
@@ -72,13 +73,15 @@ export const OpenLinkPage = () => {
               <DividerWithText>{t('orOpenWith')}</DividerWithText>
 
               <BrowserChoiceList browsers={mainBrowsers} />
-              <UncontrolledAccordion
-                renderHeader={(isOpen) =>
-                  isOpen ? t('hideOtherBrowsers') : t('showOtherBrowsers')
-                }
-              >
-                <BrowserChoiceList browsers={fallbackBrowsers} />
-              </UncontrolledAccordion>
+              {ENV.showFallbackBrowsers && (
+                <UncontrolledAccordion
+                  renderHeader={(isOpen) =>
+                    isOpen ? t('hideOtherBrowsers') : t('showOtherBrowsers')
+                  }
+                >
+                  <BrowserChoiceList browsers={fallbackBrowsers} />
+                </UncontrolledAccordion>
+              )}
             </div>
           </Section>
         </Card>
@@ -138,8 +141,8 @@ type BrowserChoices = {
   type?: TgPlaform;
 }[];
 export const mainBrowsers: BrowserChoices = [
-  { id: 'safari', label: 'openInSafari', icon: <FaSafari size={20} />, type: 'ios' },
   { id: 'chrome', label: 'openInChrome', icon: <FaChrome size={20} /> },
+  { id: 'safari', label: 'openInSafari', icon: <FaSafari size={20} />, type: 'ios' },
 ];
 export const fallbackBrowsers: BrowserChoices = [
   // { id: 'firefox', label: 'openInFirefox', icon: <FaFirefoxBrowser size={20} /> },
