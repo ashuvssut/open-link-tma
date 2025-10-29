@@ -1,6 +1,6 @@
 import './styles.css';
 
-import { useEffect } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import {
   Section,
   Placeholder,
@@ -14,6 +14,7 @@ import {
   Subheadline,
   Divider,
   Caption,
+  Accordion,
 } from '@telegram-apps/telegram-ui';
 import { LuExternalLink } from 'react-icons/lu';
 import { Page } from '@/components/Page';
@@ -27,14 +28,14 @@ import { showErrorToast } from '@/helpers/utils';
 import toast from 'react-hot-toast';
 import { t, Trans, useTranslation } from '@/locales/useTranslation';
 import { TranslationKey } from '@/locales';
+import { AccordionSummary } from '@telegram-apps/telegram-ui/dist/components/Blocks/Accordion/components/AccordionSummary/AccordionSummary';
+import { AccordionContent } from '@telegram-apps/telegram-ui/dist/components/Blocks/Accordion/components/AccordionContent/AccordionContent';
 
 export const OpenLinkPage = () => {
   const { link, error } = useSafeOpenLink();
   useEffect(() => {
     if (error) showErrorToast(error);
   }, [error]);
-
-  const handleOpen = createOpenLink(link);
 
   const { t } = useTranslation();
   if (!link) {
@@ -54,8 +55,7 @@ export const OpenLinkPage = () => {
   }
 
   // const { showSnackbar, triggerSnackbar } = useSnackbar(6000);
-
-  const platform = useLaunchParams().tgWebAppPlatform;
+  const [expanded, setExpanded] = useState(false);
   return (
     <Page>
       <div style={{ display: 'grid', padding: '1rem' }}>
@@ -64,46 +64,31 @@ export const OpenLinkPage = () => {
             {/* <AutoOpenLink>
               <CopyLinkButton link={link} />
             </AutoOpenLink> */}
-            <div style={{ padding: '2rem 1rem' }}>
+            <div style={{ padding: '2rem 1rem', textAlign: 'center' }}>
               <Headline weight="2">{t('openLink')}</Headline>
               <Subheadline style={{ color: 'var(--tgui--hint_color)', maxWidth: 340 }}>
-                {t('copyAndOpen')} <em>({t('recommended')})</em>.
+                {t('copyAndOpen')}
+                {/* <em>({t('recommended')})</em>. */}
               </Subheadline>
               <CopyLinkButton link={link} style={{ marginTop: 16 }} />
 
               <DividerWithText>{t('orOpenWith')}</DividerWithText>
 
-              <List>
-                {fallbackBrowsers.map((b) => {
-                  if (b.type && platform !== b.type) return null;
-                  return (
-                    <Cell
-                      key={b.id}
-                      before={
-                        <IconContainer style={{ alignItems: 'center', display: 'flex' }}>
-                          {b.icon}
-                        </IconContainer>
-                      }
-                      after={<LuExternalLink size={16} />}
-                      onClick={() => handleOpen(b.id)}
-                      role="button"
-                      style={{ borderRadius: 20 }}
-                    >
-                      <Text style={{ fontSize: 15 }}>{t(b.label)}</Text>
-                    </Cell>
-                  );
-                })}
-
-                {/* <Button
-                mode="filled"
-                onClick={() => handleOpen('chrome')}
-                style={{ marginTop: 8, width: '100%' }}
-                className="open-in-chrome-btn"
-              >
-                Try <FaChrome />
-                Chrome Again
-              </Button> */}
-              </List>
+              <BrowserChoiceList browsers={mainBrowsers} />
+              <div>
+                <Accordion onChange={(expanded) => setExpanded(expanded)} expanded={expanded}>
+                  <AccordionSummary className="browser-choice-accordion-summary">
+                    <Caption weight="3" style={{ textAlign: 'left' }}>
+                      {expanded ? t('hideOtherBrowsers') : t('showOtherBrowsers')}
+                    </Caption>
+                  </AccordionSummary>
+                  <AccordionContent>
+                    <div style={{ padding: '10px 20px' }}>
+                      <BrowserChoiceList browsers={fallbackBrowsers} />
+                    </div>
+                  </AccordionContent>
+                </Accordion>
+              </div>
             </div>
           </Section>
         </Card>
@@ -115,6 +100,41 @@ export const OpenLinkPage = () => {
         </Snackbar>
       )} */}
     </Page>
+  );
+};
+
+const BrowserChoiceList = ({
+  browsers,
+  children,
+}: PropsWithChildren<{ browsers: BrowserChoices }>) => {
+  const { link } = useSafeOpenLink();
+  const handleOpen = createOpenLink(link);
+
+  const platform = useLaunchParams().tgWebAppPlatform;
+  return (
+    <List>
+      {browsers.map((b) => {
+        if (b.type && platform !== b.type) return null;
+        return (
+          <Cell
+            key={b.id}
+            before={
+              <IconContainer style={{ alignItems: 'center', display: 'flex' }}>
+                {b.icon}
+              </IconContainer>
+            }
+            after={<LuExternalLink size={16} />}
+            onClick={() => handleOpen(b.id)}
+            role="button"
+            style={{ borderRadius: 20 }}
+          >
+            <Text style={{ fontSize: 15 }}>{t(b.label)}</Text>
+          </Cell>
+        );
+      })}
+
+      {children}
+    </List>
   );
 };
 
@@ -139,20 +159,22 @@ const DividerWithText = ({ children }: { children: React.ReactNode }) => (
 /** @see https://docs.telegram-mini-apps.com/platform/about#supported-applications */
 type TgPlaform = 'ios' | 'android' | 'maocs' | 'tdesktop' | 'weba' | 'web';
 type BrowserType = OpenLinkBrowser | 'safari';
-export const fallbackBrowsers = [
-  { id: 'safari', label: 'openInSafari', icon: <FaSafari size={20} />, type: 'ios' },
-  { id: 'chrome', label: 'openInChrome', icon: <FaChrome size={20} /> },
-  { id: 'firefox', label: 'openInFirefox', icon: <FaFirefoxBrowser size={20} /> },
-  { id: 'edge', label: 'openInEdge', icon: <FaEdge size={20} /> },
-  { id: 'brave', label: 'openInBrave', icon: <FaBrave size={20} /> },
-  { id: 'samsung-browser', label: 'openInSamsungBrowser', icon: <RiPlanetFill size={20} /> },
-] as {
+type BrowserChoices = {
   id: OpenLinkBrowser | 'safari';
   label: TranslationKey;
   icon: JSX.Element;
   type?: TgPlaform;
 }[];
-
+export const mainBrowsers: BrowserChoices = [
+  { id: 'safari', label: 'openInSafari', icon: <FaSafari size={20} />, type: 'ios' },
+  { id: 'chrome', label: 'openInChrome', icon: <FaChrome size={20} /> },
+];
+export const fallbackBrowsers: BrowserChoices = [
+  // { id: 'firefox', label: 'openInFirefox', icon: <FaFirefoxBrowser size={20} /> },
+  { id: 'edge', label: 'openInEdge', icon: <FaEdge size={20} /> },
+  { id: 'brave', label: 'openInBrave', icon: <FaBrave size={20} /> },
+  { id: 'samsung-browser', label: 'openInSamsungBrowser', icon: <RiPlanetFill size={20} /> },
+];
 export const createOpenLink = (link: string | null) => (browser: BrowserType) => {
   if (!link) return;
   try {

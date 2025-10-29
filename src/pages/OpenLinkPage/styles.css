@@ -3,3 +3,8 @@
   align-items: center;
   gap: 0.2rem;
 }
+
+/* .browserChoiceAccordionSummary */
+.browser-choice-accordion-summary > div > h6 {
+  align-self: flex-end;
+}

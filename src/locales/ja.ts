@@ -20,4 +20,6 @@ export const ja = {
   'error.domainNotAllowed': '許可されていないドメインです',
   'error.invalidUrl': '無効なURLです',
   linkParsingFailed: 'リンクの解析に失敗しました！',
+  showOtherBrowsers: '他のブラウザを表示',
+  hideOtherBrowsers: '他のブラウザを非表示',
 };

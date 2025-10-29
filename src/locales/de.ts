@@ -21,4 +21,6 @@ export const de = {
   'error.domainNotAllowed': 'Domäne nicht erlaubt',
   'error.invalidUrl': 'Ungültige URL',
   linkParsingFailed: 'Link konnte nicht analysiert werden!',
+  showOtherBrowsers: 'Andere Browser anzeigen',
+  hideOtherBrowsers: 'Andere Browser ausblenden',
 };

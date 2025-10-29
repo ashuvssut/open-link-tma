@@ -20,4 +20,6 @@ export const en = {
   'error.domainNotAllowed': 'Domain not allowed',
   'error.invalidUrl': 'Invalid URL',
   linkParsingFailed: 'Link parsing failed!',
+  showOtherBrowsers: 'Show other browsers',
+  hideOtherBrowsers: 'Hide other browsers',
 };

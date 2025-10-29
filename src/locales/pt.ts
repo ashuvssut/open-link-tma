@@ -20,4 +20,6 @@ export const pt = {
   'error.domainNotAllowed': 'Domínio não permitido',
   'error.invalidUrl': 'URL inválido',
   linkParsingFailed: 'Falha ao analisar o link!',
+  showOtherBrowsers: 'Mostrar outros navegadores',
+  hideOtherBrowsers: 'Ocultar outros navegadores',
 };

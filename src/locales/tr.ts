@@ -20,4 +20,6 @@ export const tr = {
   'error.domainNotAllowed': 'Alan adı izinli değil',
   'error.invalidUrl': 'Geçersiz URL',
   linkParsingFailed: 'Bağlantı ayrıştırılamadı!',
+  showOtherBrowsers: 'Diğer tarayıcıları göster',
+  hideOtherBrowsers: 'Diğer tarayıcıları gizle',
 };

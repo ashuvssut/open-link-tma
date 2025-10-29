@@ -20,4 +20,6 @@ export const cs = {
   'error.domainNotAllowed': 'Doména není povolena',
   'error.invalidUrl': 'Neplatná URL adresa',
   linkParsingFailed: 'Nepodařilo se analyzovat odkaz!',
+  showOtherBrowsers: 'Zobrazit další prohlížeče',
+  hideOtherBrowsers: 'Skrýt další prohlížeče',
 };

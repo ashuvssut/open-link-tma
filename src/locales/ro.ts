@@ -20,4 +20,6 @@ export const ro = {
   'error.domainNotAllowed': 'Domeniu nepermis',
   'error.invalidUrl': 'URL invalid',
   linkParsingFailed: 'Analiza linkului a eșuat!',
+  showOtherBrowsers: 'Afișează alte browsere',
+  hideOtherBrowsers: 'Ascunde alte browsere',
 };

@@ -20,4 +20,6 @@ export const ru = {
   'error.domainNotAllowed': 'Домен не разрешен',
   'error.invalidUrl': 'Неверный URL',
   linkParsingFailed: 'Не удалось разобрать ссылку!',
+  showOtherBrowsers: 'Показать другие браузеры',
+  hideOtherBrowsers: 'Скрыть другие браузеры',
 };

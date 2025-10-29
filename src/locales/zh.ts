@@ -20,4 +20,6 @@ export const zh = {
   'error.domainNotAllowed': '不允许的域名',
   'error.invalidUrl': '无效的 URL',
   linkParsingFailed: '链接解析失败！',
+  showOtherBrowsers: '显示其他浏览器',
+  hideOtherBrowsers: '隐藏其他浏览器',
 };

@@ -20,4 +20,6 @@ export const pl = {
   'error.domainNotAllowed': 'Domena niedozwolona',
   'error.invalidUrl': 'Nieprawidłowy adres URL',
   linkParsingFailed: 'Nie udało się przetworzyć linku!',
+  showOtherBrowsers: 'Pokaż inne przeglądarki',
+  hideOtherBrowsers: 'Ukryj inne przeglądarki',
 };
