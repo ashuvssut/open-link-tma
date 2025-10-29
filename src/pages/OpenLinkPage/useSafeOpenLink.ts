@@ -1,7 +1,7 @@
 import { ENV } from '@/constants';
 import { decodeX, showErrorToast } from '@/helpers/utils';
 import { defaultLocale, isLocaleSupported, Locale } from '@/locales';
-import { t } from '@/locales/useTranslation';
+import { createT, usePersistLocale } from '@/locales/useTranslation';
 import { useLaunchParams } from '@tma.js/sdk-react';
 import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -19,26 +19,27 @@ export function useSafeOpenLink() {
   const { search } = useLocation();
 
   const { decodedLink, type, lang } = extractLink(startParam, search);
+  usePersistLocale(lang);
+  const t = createT(lang);
   const { link, error } = useMemo(() => {
     try {
-      if (!decodedLink)
-        return { link: null, error: t('error.missingOpenParam', lang), decodeType: null };
+      if (!decodedLink) return { link: null, error: t('error.missingOpenParam'), decodeType: null };
 
       const url = new URL(decodedLink);
 
-      if (url.protocol !== 'https:') return { link: null, error: t('error.httpsOnly', lang) };
+      if (url.protocol !== 'https:') return { link: null, error: t('error.httpsOnly') };
 
       if (
         ENV.allowedDomains.length > 0 &&
         !ENV.allowedDomains.some((d: string) => url.hostname.endsWith(d))
       ) {
-        return { link: null, error: t('error.domainNotAllowed', lang) };
+        return { link: null, error: t('error.domainNotAllowed') };
       }
 
       return { link: url.toString(), error: null };
     } catch (err) {
-      showErrorToast(err, t('linkParsingFailed', lang));
-      return { link: null, error: t('error.invalidUrl', lang) };
+      showErrorToast(err, t('linkParsingFailed'));
+      return { link: null, error: t('error.invalidUrl') };
     }
   }, [decodedLink]);
 

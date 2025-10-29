@@ -2,30 +2,40 @@ import { defaultLocale, Locale, TranslationKey, translations } from '@/locales';
 import { useSafeOpenLink } from '@/pages/OpenLinkPage/useSafeOpenLink';
 import { useEffect } from 'react';
 
-export const t = <TTransKey extends TranslationKey, TLocale extends Locale>(
-  key: TTransKey,
-  lang?: TLocale
-): (typeof translations)[TLocale][TTransKey] => {
-  let selectedLang: Locale | undefined = lang;
-  if (!selectedLang) {
-    selectedLang = localStorage.getItem('locale') as Locale;
-  }
-  if (!selectedLang) {
-    selectedLang = defaultLocale;
-  }
+export const createT = <TLocale extends Locale>(locale?: TLocale) => {
+  // Resolve effective locale
+  let selectedLocale: Locale =
+    locale ?? (localStorage.getItem('locale') as Locale) ?? defaultLocale;
 
-  return translations[selectedLang]?.[key] || translations[defaultLocale]?.[key] || key || '';
+  // Return the actual translation function
+  return <TTransKey extends TranslationKey>(
+    key: TTransKey
+  ): (typeof translations)[TLocale][TTransKey] => {
+    return (
+      translations[selectedLocale]?.[key] || translations[defaultLocale]?.[key] || (key as any)
+    );
+  };
 };
 
-const useLocaleTranslations = <TLocale extends Locale>(lang: TLocale) => {
+export const t = <TTransKey extends TranslationKey>(
+  key: TTransKey,
+  locale = defaultLocale as Locale
+): string => {
+  const translator = createT(locale);
+  return translator(key);
+};
+
+export const usePersistLocale = (lang: Locale) => {
   useEffect(() => {
     localStorage.setItem('locale', lang);
   }, [lang]);
+};
+
+const useLocaleTranslations = <TLocale extends Locale>(lang: TLocale) => {
+  usePersistLocale(lang);
 
   return {
-    t: <TTransKey extends TranslationKey>(
-      key: TTransKey
-    ): (typeof translations)[TLocale][TTransKey] => t(key, lang),
+    t: createT<TLocale>(lang),
   };
 };
 
